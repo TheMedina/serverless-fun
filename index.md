@@ -4,3 +4,6 @@ AWS recently released a learning path documenting the creation of a Unicorn ride
 First things first. What is Serverless Framework and how do I use it? Visit https://serverless.com/learn/ to learn more about what it is, and https://serverless.com/framework/docs/providers/aws/guide/installation/ to walk through the installation and initial setup. Once you have your environment setup we can begin to walk through the serverless.yml and see how this correlates with learning module.
 
 ### Pre-Module
+If you haven’t gone through this learning path as intended some of the things might seem out of order. I will be referencing lines in the serverless.yml that aren’t in sequential order. At some point every line in the .yml will be covered, it just may seem missequenced.
+
+There are a few things that need to be specified before we begin to declare resources to be provisioned, IAM role statements, and the like. I will cover the entirety of the serverless.yml file used for this project. The first few lines in our serverless.yml don’t have any real bearing on the modules and are just informative:
