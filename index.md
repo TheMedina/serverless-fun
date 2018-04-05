@@ -3,7 +3,7 @@ AWS recently released a learning path documenting the creation of a Unicorn ride
 
 First things first. What is Serverless Framework and how do I use it? Visit https://serverless.com/learn/ to learn more about what it is, and https://serverless.com/framework/docs/providers/aws/guide/installation/ to walk through the installation and initial setup. Once you have your environment setup we can begin to walk through the serverless.yml and see how this correlates with learning module.
 
-### Pre-Module
+## Pre-Module
 If you haven’t gone through this learning path as intended some of the things might seem out of order. I will be referencing lines in the serverless.yml that aren’t in sequential order. At some point every line in the .yml will be covered, it just may seem missequenced.
 
 There are a few things that need to be specified before we begin to declare resources to be provisioned, IAM role statements, and the like. I will cover the entirety of the serverless.yml file used for this project. The first few lines in our serverless.yml don’t have any real bearing on the modules and are just informative:
@@ -27,7 +27,7 @@ provider:
 
 As you can see from the above we’re defining our service name and the version of the Serverless framework. Nex there is a custom stage option define. This is so we can differentiate between dev, and prod, etc. Then follows all of the provider information. In this case it happens to be AWS; however, please note that the Serverless Framework is flexible and can be used to deploy services in Azure and other Cloud Providers as well. Lastly we have our environment definitions. These were both custom and not necessary for the deployment of this service; however, it will help keep things clean and organized.
 
-### Module 1
+## Module 1
 The goal of this module is to essentially create an S3 bucket, upload static content, and then create a policy that makes it accessible to anonymous users (i.e. the world), and then enable website hosting on said bucket. This is all pretty easy but quite labor intensive normally. With the Serverless Framework the following lines are all we need to provision the S3 bucket and configure it as needed:
 
 ```markdown
@@ -71,13 +71,13 @@ echo "Bucket URL: ${WEBSITE_URL}"
 
 As a note please be sure to update your stack-name to whatever your stack name is in cloud formation. Additionally, MAKE SURE TO USE THE FILES PROVIDED IN THIS REPO AND NOT THE AWS LEARNING PATH.
 
-### Module 2
+## Module 2
 This module is a little tricky. At the time of this writing it’s not currently possible to generate Cognito User Pools through Serverless Framework / Cloudformation. Manually complete steps one and two, and skip step 3 until we deploy our service and push our static content.
 
-### Module 3-4
+## Module 3-4
 This is where we will begin to witness the true power of the Serverless Framework. These sections aim to do the following:
 
-#### Create a DynamoDB table with a specific partition key and type.
+### Create a DynamoDB table with a specific partition key and type.
 
 ```markdown
 Rides:
@@ -96,7 +96,7 @@ Rides:
 
 This defines a Table named Rides with a specific partition key name and attribute type (RideId, string). Additionally, we have to specify the Read/Write capacity units for DynamoDB.
 
-#### Create a Lambda role for our functions specifying the PutItem action for DynamoDB:
+### Create a Lambda role for our functions specifying the PutItem action for DynamoDB:
 Another interesting thing about the Serverless Framework is that it will always deploy only one role with your service (mirroring the service name). This allow us to only have to define IAM statement policies to accomplish any permissions related task with our functions:
 
 ```markdown
@@ -119,7 +119,7 @@ iamRoleStatements:
 
 This is effectively allowing our function to Get and Put items into our specified DynamoDB table.
 
-#### Create a Lambda function handling request:
+### Create a Lambda function handling request:
 
 ```markdown
 functions:
@@ -130,7 +130,7 @@ functions:
 This defines the handler for our function.
 
 
-#### Create a new Rest API endpoint:
+### Create a new Rest API endpoint:
 
 ```markdown
 events:
@@ -139,7 +139,7 @@ events:
 
 These lines effectively cover this.
 
-#### Create a Cognito User Pools Authorizer:
+### Create a Cognito User Pools Authorizer:
 
 ```markdown
 authorizer:
@@ -148,7 +148,7 @@ authorizer:
 
 This allows Cognito to function as an authorizer. Please be sure to enter your User Pools ARN from Module 2
 
-##### Create a new resource and method:
+### Create a new resource and method:
 
 ```markdown
 method: post
@@ -156,10 +156,10 @@ method: post
 
 This enables our post method for our function
 
-#### Deploy your API:
+### Deploy your API:
 This will happen automatically when we deploy our service.
 
-### Almost Done
+## Almost Done
 Now all we have to do is run ‘sls deploy -s dev’. This will trigger the Cloudformation stack and create all of our requested resources. Assuming there are no typos you should be able to verify an API gateway endpoint URL, S3 bucket DynamoDB table, etc.
 
 Now that our serverless.yml has been populated we need to update our static files per the learning path documentation. The only thing we really need to change is the config.js located in the static/js directory. Please remember the invoker URL will be the POST endpoint the Serverless Framework spits out at you at the end of the successful deploy. Once the config.js file has been updated feel free to run the deploy_static_file.sh script to push all of our static content to your S3 bucket.
