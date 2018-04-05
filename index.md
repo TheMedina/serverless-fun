@@ -1,4 +1,4 @@
-## Synopsis
+# Synopsis
 AWS recently released a learning path documenting the creation of a Unicorn ride service known as Wild Rydes. While the learning path (found at https://aws.amazon.com/getting-started/serverless-web-app/) is great at helping users understand the high level concepts of serverless architecture and the nitty gritty details of provisiong API gateways, DynamoDB tables, etc. it wasn’t very ‘real world’ friendly. This document aims to take the learning path a step up utilizing a few bash scripts, and the Serverless Framework to emulate a real world workflow. As a note I would strongly recommend completing the learning path as intended, then come back and revisit this page. That will give you a greater appreciation for how powerful and easy the Serverless Framework truly is.
 
 First things first. What is Serverless Framework and how do I use it? Visit https://serverless.com/learn/ to learn more about what it is, and https://serverless.com/framework/docs/providers/aws/guide/installation/ to walk through the installation and initial setup. Once you have your environment setup we can begin to walk through the serverless.yml and see how this correlates with learning module.
@@ -159,7 +159,7 @@ This enables our post method for our function
 #### Deploy your API:
 This will happen automatically when we deploy our service.
 
-#### Almost Done
+### Almost Done
 Now all we have to do is run ‘sls deploy -s dev’. This will trigger the Cloudformation stack and create all of our requested resources. Assuming there are no typos you should be able to verify an API gateway endpoint URL, S3 bucket DynamoDB table, etc.
 
 Now that our serverless.yml has been populated we need to update our static files per the learning path documentation. The only thing we really need to change is the config.js located in the static/js directory. Please remember the invoker URL will be the POST endpoint the Serverless Framework spits out at you at the end of the successful deploy. Once the config.js file has been updated feel free to run the deploy_static_file.sh script to push all of our static content to your S3 bucket.
