@@ -26,3 +26,47 @@ provider:
 ```
 
 As you can see from the above we’re defining our service name and the version of the Serverless framework. Nex there is a custom stage option define. This is so we can differentiate between dev, and prod, etc. Then follows all of the provider information. In this case it happens to be AWS; however, please note that the Serverless Framework is flexible and can be used to deploy services in Azure and other Cloud Providers as well. Lastly we have our environment definitions. These were both custom and not necessary for the deployment of this service; however, it will help keep things clean and organized.
+
+### Module 1
+The goal of this module is to essentially create an S3 bucket, upload static content, and then create a policy that makes it accessible to anonymous users (i.e. the world), and then enable website hosting on said bucket. This is all pretty easy but quite labor intensive normally. With the Serverless Framework the following lines are all we need to provision the S3 bucket and configure it as needed:
+
+```markdown
+resources:
+  Resources:
+    S3WildRydes:
+      Type: AWS::S3::Bucket
+      Properties:
+        WebsiteConfiguration:
+          ErrorDocument: index.html
+          IndexDocument: index.html
+```
+
+This snippet of the serverless.yml is creating a WebSite enabled S3 bucket and defining the Error and Index documents on the fly!
+
+While we will walk through deploying this project at the end of this document the following shell script is what I use to push my static files into the designated S3 bucket. As a reminder, please remember this script will not work if you have not deployed this service (as it does not yet exist):
+
+```markdown
+#!/bin/bash
+set -eu
+
+STAGE="${1:-dev}"
+echo "Deploying static assets to ${STAGE}..."
+
+BUCKET_NAME=$(aws \
+    cloudformation describe-stacks \
+    --stack-name "wild-rydes-${STAGE}" \
+    --query "Stacks[0].Outputs[?OutputKey=='WebSiteBucket'] | [0].OutputValue" \
+    --output text)
+
+WEBSITE_URL=$(aws \
+    cloudformation describe-stacks \
+    --stack-name "wild-rydes-${STAGE}" \
+    --query "Stacks[0].Outputs[?OutputKey=='WebSiteUrl'] | [0].OutputValue" \
+    --output text)
+
+aws s3 sync --acl 'public-read' --delete ./static/ "s3://${BUCKET_NAME}/"
+
+echo "Bucket URL: ${WEBSITE_URL}"
+```
+
+As a note please be sure to update your stack-name to whatever your stack name is in cloud formation. Additionally, MAKE SURE TO USE THE FILES PROVIDED IN THIS REPO AND NOT THE AWS LEARNING PATH.
