@@ -7,3 +7,22 @@ First things first. What is Serverless Framework and how do I use it? Visit http
 If you haven’t gone through this learning path as intended some of the things might seem out of order. I will be referencing lines in the serverless.yml that aren’t in sequential order. At some point every line in the .yml will be covered, it just may seem missequenced.
 
 There are a few things that need to be specified before we begin to declare resources to be provisioned, IAM role statements, and the like. I will cover the entirety of the serverless.yml file used for this project. The first few lines in our serverless.yml don’t have any real bearing on the modules and are just informative:
+
+```markdown
+service: wild-rydes
+
+frameworkVersion: ">=1.26.1 <2.0.0"
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-1
+  environment:
+    sls_stage: ${self:custom.stage}
+    db_name: {Ref: Rides}
+```
+
+As you can see from the above we’re defining our service name and the version of the Serverless framework. Nex there is a custom stage option define. This is so we can differentiate between dev, and prod, etc. Then follows all of the provider information. In this case it happens to be AWS; however, please note that the Serverless Framework is flexible and can be used to deploy services in Azure and other Cloud Providers as well. Lastly we have our environment definitions. These were both custom and not necessary for the deployment of this service; however, it will help keep things clean and organized.
