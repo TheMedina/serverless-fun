@@ -70,3 +70,96 @@ echo "Bucket URL: ${WEBSITE_URL}"
 ```
 
 As a note please be sure to update your stack-name to whatever your stack name is in cloud formation. Additionally, MAKE SURE TO USE THE FILES PROVIDED IN THIS REPO AND NOT THE AWS LEARNING PATH.
+
+### Module 2
+This module is a little tricky. At the time of this writing it’s not currently possible to generate Cognito User Pools through Serverless Framework / Cloudformation. Manually complete steps one and two, and skip step 3 until we deploy our service and push our static content.
+
+### Module 3-4
+This is where we will begin to witness the true power of the Serverless Framework. These sections aim to do the following:
+
+#### Create a DynamoDB table with a specific partition key and type.
+
+```markdown
+Rides:
+  Type: "AWS::DynamoDB::Table"
+  Properties:
+    AttributeDefinitions:
+      - AttributeName: RideId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: RideId
+        KeyType: HASH
+    ProvisionedThroughput:
+      ReadCapacityUnits: 5
+      WriteCapacityUnits: 5
+```
+
+This defines a Table named Rides with a specific partition key name and attribute type (RideId, string). Additionally, we have to specify the Read/Write capacity units for DynamoDB.
+
+#### Create a Lambda role for our functions specifying the PutItem action for DynamoDB:
+Another interesting thing about the Serverless Framework is that it will always deploy only one role with your service (mirroring the service name). This allow us to only have to define IAM statement policies to accomplish any permissions related task with our functions:
+
+```markdown
+iamRoleStatements:
+  - Action:
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+    Resource:
+      "Fn::Join":
+        - ""
+        -
+          - "arn:aws:dynamodb:"
+          - Ref: "AWS::Region"
+          - ":"
+          - Ref: "AWS::AccountId"
+          - ":table/"
+          - Ref: Rides
+    Effect: Allow
+```
+
+This is effectively allowing our function to Get and Put items into our specified DynamoDB table.
+
+#### Create a Lambda function handling request:
+
+```markdown
+functions:
+  RequestUnicorn:
+    handler: requestUnicorn.handler
+```
+
+This defines the handler for our function.
+
+
+#### Create a new Rest API endpoint:
+
+```markdown
+events:
+- http:
+```
+
+These lines effectively cover this.
+
+#### Create a Cognito User Pools Authorizer:
+
+```markdown
+authorizer:
+    arn: arn:aws:cognito-idp:us-east-1:xxx:userpool/us-east-1_xxx
+```
+
+This allows Cognito to function as an authorizer. Please be sure to enter your User Pools ARN from Module 2
+
+##### Create a new resource and method:
+
+```markdown
+method: post
+```
+
+This enables our post method for our function
+
+#### Deploy your API:
+This will happen automatically when we deploy our service.
+
+#### Almost Done
+Now all we have to do is run ‘sls deploy -s dev’. This will trigger the Cloudformation stack and create all of our requested resources. Assuming there are no typos you should be able to verify an API gateway endpoint URL, S3 bucket DynamoDB table, etc.
+
+Now that our serverless.yml has been populated we need to update our static files per the learning path documentation. The only thing we really need to change is the config.js located in the static/js directory. Please remember the invoker URL will be the POST endpoint the Serverless Framework spits out at you at the end of the successful deploy. Once the config.js file has been updated feel free to run the deploy_static_file.sh script to push all of our static content to your S3 bucket.
