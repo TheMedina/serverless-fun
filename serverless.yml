@@ -37,7 +37,7 @@ functions:
         path: /ride
         method: post
         authorizer:
-            arn: arn:aws:cognito-idp:us-east-1:720083328586:userpool/us-east-1_ePYGHryfj
+            arn: arn:aws:cognito-idp:us-east-1:xxx:userpool/us-east-1xxx
 resources:
   Resources:
     S3WildRydes:
@@ -63,4 +63,3 @@ resources:
       Value: {"Fn::GetAtt": [S3WildRydes, WebsiteURL]}
     WebSiteBucket:
       Value: {Ref: S3WildRydes}
-
