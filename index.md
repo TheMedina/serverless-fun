@@ -1,7 +1,7 @@
 # Synopsis
-AWS recently released a learning path documenting the creation of a Unicorn ride service known as Wild Rydes. While the learning path (found at https://aws.amazon.com/getting-started/serverless-web-app/) is great at helping users understand the high level concepts of serverless architecture and the nitty gritty details of provisiong API gateways, DynamoDB tables, etc. it wasn’t very ‘real world’ friendly. This document aims to take the learning path a step up utilizing a few bash scripts, and the Serverless Framework to emulate a real world workflow. As a note I would strongly recommend completing the learning path as intended, then come back and revisit this page. That will give you a greater appreciation for how powerful and easy the Serverless Framework truly is.
+AWS recently released a learning path documenting the creation of a Unicorn ride service known as Wild Rydes. While the learning path (found at [](https://aws.amazon.com/getting-started/serverless-web-app/)) is great at helping users understand the high level concepts of serverless architecture and the nitty gritty details of provisiong API gateways, DynamoDB tables, etc. it wasn’t very ‘real world’ friendly. This document aims to take the learning path a step up utilizing a few bash scripts, and the Serverless Framework to emulate a real world workflow. As a note I would strongly recommend completing the learning path as intended, then come back and revisit this page. That will give you a greater appreciation for how powerful and easy the Serverless Framework truly is.
 
-First things first. What is Serverless Framework and how do I use it? Visit https://serverless.com/learn/ to learn more about what it is, and https://serverless.com/framework/docs/providers/aws/guide/installation/ to walk through the installation and initial setup. Once you have your environment setup we can begin to walk through the serverless.yml and see how this correlates with learning module.
+First things first. What is Serverless Framework and how do I use it? Visit [](https://serverless.com/learn/) to learn more about what it is, and [](https://serverless.com/framework/docs/providers/aws/guide/installation/) to walk through the installation and initial setup. Once you have your environment setup we can begin to walk through the serverless.yml and see how this correlates with learning module.
 
 ## Pre-Module
 If you haven’t gone through this learning path as intended some of the things might seem out of order. I will be referencing lines in the serverless.yml that aren’t in sequential order. At some point every line in the .yml will be covered, it just may seem missequenced.
@@ -69,7 +69,7 @@ aws s3 sync --acl 'public-read' --delete ./static/ "s3://${BUCKET_NAME}/"
 echo "Bucket URL: ${WEBSITE_URL}"
 ```
 
-As a note please be sure to update your stack-name to whatever your stack name is in cloud formation. Additionally, MAKE SURE TO USE THE FILES PROVIDED IN THIS REPO AND NOT THE AWS LEARNING PATH.
+As a note please be sure to update your stack-name to whatever your stack name is in cloud formation. Additionally, MAKE SURE TO USE THE FILES PROVIDED IN [THIS REPO](https://github.com/TheMedina/serverless-fun) AND NOT THE AWS LEARNING PATH.
 
 ## Module 2
 This module is a little tricky. At the time of this writing it’s not currently possible to generate Cognito User Pools through Serverless Framework / Cloudformation. Manually complete steps one and two, and skip step 3 until we deploy our service and push our static content.
